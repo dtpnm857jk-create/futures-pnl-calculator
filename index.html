@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="zh-Hant-TW">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="合約損益">
+<meta name="theme-color" content="#0f766e">
+<meta name="format-detection" content="telephone=no">
+<meta name="referrer" content="no-referrer">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; script-src 'unsafe-inline'; img-src data:; connect-src 'none'; form-action 'none'">
+<title>合約損益計算器｜扣完成本的實際損益</title>
+<style>
+  :root{--bg:#f4f6f8;--card:#fff;--ink:#14202b;--mute:#5d6b78;--line:#dde3e8;--pri:#0f766e;--pos:#0a8a3a;--neg:#c62828;--r:14px}
+  @media (prefers-color-scheme:dark){:root{--bg:#0f1418;--card:#182027;--ink:#e8eef2;--mute:#9aa8b3;--line:#2a353e;--pri:#2dd4bf;--pos:#4ade80;--neg:#f87171}}
+  *{box-sizing:border-box}
+  html{-webkit-text-size-adjust:100%}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"PingFang TC","Noto Sans CJK TC","Microsoft JhengHei",sans-serif;line-height:1.5;padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left)}
+  main{max-width:520px;margin:0 auto;padding:14px 14px 28px}
+  h1{font-size:1.25rem;margin:6px 2px 2px}
+  .sub{color:var(--mute);font-size:.85rem;margin:0 2px 12px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:14px;margin-bottom:12px}
+  .row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  label{display:block;font-size:.85rem;color:var(--mute);margin:8px 0 4px}
+  input[type=number]{width:100%;font-size:17px;padding:11px 12px;border:1px solid var(--line);border-radius:10px;background:transparent;color:var(--ink);-webkit-appearance:none;appearance:none}
+  input:focus{outline:2px solid var(--pri);border-color:transparent}
+  input.bad{border-color:var(--neg);outline-color:var(--neg)}
+  .seg{display:flex;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+  .seg input{position:absolute;opacity:0;pointer-events:none}
+  .seg label{flex:1;text-align:center;margin:0;padding:10px 4px;font-size:1rem;color:var(--ink);cursor:pointer;user-select:none}
+  .seg input:checked+label{background:var(--pri);color:#fff;font-weight:600}
+  .seg input:focus-visible+label{outline:2px solid var(--pri);outline-offset:-3px}
+  .hint{font-size:.78rem;color:var(--mute);margin-top:4px}
+  .err{color:var(--neg);font-size:.85rem;min-height:1.2em;margin-top:8px}
+  .btns{display:flex;gap:10px;margin-top:10px}
+  button{flex:1;font-size:1rem;padding:12px;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--ink)}
+  button.pri{background:var(--pri);border-color:var(--pri);color:#fff;font-weight:600}
+  table{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums}
+  td{padding:7px 2px;border-bottom:1px solid var(--line);font-size:.95rem}
+  td:last-child{text-align:right;white-space:nowrap}
+  tr.sub td{color:var(--mute);font-size:.85rem;padding-left:14px}
+  tr.total td{font-weight:700;font-size:1.05rem;border-bottom:none}
+  .big{font-size:1.6rem;font-weight:800;text-align:center;margin:4px 0 8px}
+  .pos{color:var(--pos)} .neg{color:var(--neg)}
+  footer{color:var(--mute);font-size:.78rem;text-align:center;margin-top:8px}
+  details{font-size:.85rem;color:var(--mute)} summary{cursor:pointer}
+</style>
+</head>
+<body>
+<main>
+  <h1>合約損益計算器</h1>
+  <p class="sub">USDT／USDC 本位線性永續合約・算出扣完手續費與資金費後的實際損益</p>
+
+  <form id="f" class="card" novalidate autocomplete="off" onsubmit="return false">
+    <label>計價幣別</label>
+    <div class="seg" role="radiogroup" aria-label="計價幣別">
+      <input type="radio" name="quote" id="qUSDT" value="USDT" checked><label for="qUSDT">USDT</label>
+      <input type="radio" name="quote" id="qUSDC" value="USDC"><label for="qUSDC">USDC</label>
+    </div>
+
+    <label>方向</label>
+    <div class="seg" role="radiogroup" aria-label="方向">
+      <input type="radio" name="side" id="sLong" value="long" checked><label for="sLong">做多</label>
+      <input type="radio" name="side" id="sShort" value="short"><label for="sShort">做空</label>
+    </div>
+
+    <div class="row">
+      <div><label for="entry">開倉價</label><input type="number" id="entry" inputmode="decimal" step="any" min="0" placeholder="例：100"></div>
+      <div><label for="exit">平倉價</label><input type="number" id="exit" inputmode="decimal" step="any" min="0" placeholder="例：110"></div>
+    </div>
+
+    <label for="qty">幣數（數量，單位：幣）</label>
+    <input type="number" id="qty" inputmode="decimal" step="any" min="0" placeholder="例：2">
+    <div class="hint">請輸入「幣的數量」，不是保證金，也不是張數。</div>
+
+    <div class="row">
+      <div><label for="openRate">開倉手續費率 %</label><input type="number" id="openRate" inputmode="decimal" step="any" min="0" value="0.05"></div>
+      <div><label for="closeRate">平倉手續費率 %</label><input type="number" id="closeRate" inputmode="decimal" step="any" min="0" value="0.05"></div>
+    </div>
+    <div class="hint">掛單（Maker）／吃單（Taker）費率不同，請以交易所實際費率為準。0.05% 就輸入 0.05。</div>
+
+    <label>資金費（持倉期間實際入帳／扣款合計）</label>
+    <div class="seg" role="radiogroup" aria-label="資金費方向">
+      <input type="radio" name="fdir" id="fRecv" value="recv" checked><label for="fRecv">收到 ＋</label>
+      <input type="radio" name="fdir" id="fPaid" value="paid"><label for="fPaid">支付 −</label>
+    </div>
+    <input type="number" id="funding" inputmode="decimal" step="any" min="0" value="0" style="margin-top:8px" aria-label="資金費金額">
+    <div class="hint">金額填正數，用上方切換「收到」或「支付」。可在交易所的資金費紀錄查到。</div>
+
+    <div class="err" id="err" role="alert"></div>
+    <div class="btns">
+      <button type="button" id="reset">清除</button>
+      <button type="button" class="pri" id="calc">計算</button>
+    </div>
+  </form>
+
+  <section class="card" id="out" aria-live="polite">
+    <div class="sub" style="text-align:center;margin:0">淨損益（扣完成本）</div>
+    <div class="big" id="oNetBig">—</div>
+    <table>
+      <tr><td>開倉名目價值</td><td id="oNotional">—</td></tr>
+      <tr><td>毛損益（價差）</td><td id="oGross">—</td></tr>
+      <tr class="sub"><td>開倉手續費</td><td id="oOpenFee">—</td></tr>
+      <tr class="sub"><td>平倉手續費</td><td id="oCloseFee">—</td></tr>
+      <tr class="sub"><td>資金費（收到＋／支付−）</td><td id="oFunding">—</td></tr>
+      <tr><td>總成本 <span class="hint">＝手續費＋支付資金費−收到資金費</span></td><td id="oCost">—</td></tr>
+      <tr class="total"><td>淨損益</td><td id="oNet">—</td></tr>
+    </table>
+    <details style="margin-top:10px"><summary>計算公式</summary>
+      <p>做多毛損益 ＝（平倉價 − 開倉價）× 幣數<br>做空毛損益 ＝（開倉價 − 平倉價）× 幣數<br>
+      開倉手續費 ＝ 開倉價 × 幣數 × 開倉費率<br>平倉手續費 ＝ 平倉價 × 幣數 × 平倉費率<br>
+      總成本 ＝ 開倉手續費 ＋ 平倉手續費 ＋ 支付的資金費 − 收到的資金費<br>
+      淨損益 ＝ 毛損益 − 總成本 ＝ 毛損益 − 手續費 ＋ 收到資金費 − 支付資金費</p>
+      <p>計算以十進位精確運算，顯示四捨五入至小數第 8 位。總成本為負數代表收到的資金費多於手續費。</p>
+    </details>
+  </section>
+
+  <footer>
+    🔒 不收集交易資料：所有計算都在你的瀏覽器內完成，不連網、不使用追蹤分析、不儲存任何交易紀錄。<br>
+    本工具僅供試算，非投資建議；實際金額以交易所結算為準（費率、折扣、資金費、強平等因素可能不同）。
+  </footer>
+</main>
+
+<script>
+(function(){
+  'use strict';
+  // ---- 十進位精確運算：以 BigInt 整數 + 小數位數(scale) 表示 ----
+  function D(v,s){return {v:v,s:s};}
+  function parseDec(str){
+    str=String(str).trim();
+    if(!/^[+-]?(\d+\.?\d*|\.\d+)([eE][+-]?\d+)?$/.test(str)) return null;
+    var m=str.match(/^([+-]?)(\d*)\.?(\d*)(?:[eE]([+-]?\d+))?$/);
+    var sign=m[1]==='-'?-1n:1n, ip=m[2]||'0', fp=m[3]||'', ex=parseInt(m[4]||'0',10);
+    var digits=BigInt(ip+fp), scale=fp.length-ex;
+    if(scale<0){digits*=10n**BigInt(-scale);scale=0;}
+    return D(sign*digits,scale);
+  }
+  function align(a,b){var s=Math.max(a.s,b.s);return [a.v*10n**BigInt(s-a.s),b.v*10n**BigInt(s-b.s),s];}
+  function add(a,b){var t=align(a,b);return D(t[0]+t[1],t[2]);}
+  function sub(a,b){var t=align(a,b);return D(t[0]-t[1],t[2]);}
+  function mul(a,b){return D(a.v*b.v,a.s+b.s);}
+  function pct(a){return D(a.v,a.s+2);} // 除以 100
+  function neg(a){return D(-a.v,a.s);}
+  function isZero(a){return a.v===0n;}
+  function sgn(a){return a.v>0n?1:(a.v<0n?-1:0);}
+  // 四捨五入（半數遠離零）至 dp 位，回傳字串並去掉多餘的 0（至少保留 2 位）
+  function fmt(a,dp){
+    dp=dp==null?8:dp;
+    var v=a.v,s=a.s;
+    if(s>dp){var f=10n**BigInt(s-dp),q=v/f,r=v%f;if(r<0n)r=-r;if(r*2n>=f)q+=(v<0n?-1n:1n);v=q;s=dp;}
+    var neg_=v<0n; if(neg_)v=-v;
+    var str=v.toString().padStart(s+1,'0');
+    var ip=str.slice(0,str.length-s), fp=str.slice(str.length-s);
+    fp=fp.replace(/0+$/,''); while(fp.length<2)fp+='0';
+    ip=ip.replace(/\B(?=(\d{3})+(?!\d))/g,',');
+    if(neg_ && /[1-9]/.test(ip+fp)) return '-'+ip+'.'+fp;
+    return ip+'.'+fp;
+  }
+  function plain(a,dp){return Number(fmt(a,dp).replace(/,/g,''));}
+
+  // ---- 核心計算（純函式，可供測試） ----
+  // inp: {side:'long'|'short', entry, exit, qty, openRatePct, closeRatePct, fundingDir:'recv'|'paid', fundingAmt} 皆為字串或數字
+  function calcPnL(inp){
+    var e=parseDec(inp.entry),x=parseDec(inp.exit),q=parseDec(inp.qty),
+        orr=parseDec(inp.openRatePct),cr=parseDec(inp.closeRatePct),fa=parseDec(inp.fundingAmt==null||inp.fundingAmt===''?'0':inp.fundingAmt);
+    var gross=inp.side==='short'?mul(sub(e,x),q):mul(sub(x,e),q);
+    var notional=mul(e,q);
+    var openFee=mul(notional,pct(orr));
+    var closeFee=mul(mul(x,q),pct(cr));
+    var received=inp.fundingDir==='recv'?fa:D(0n,0), paid=inp.fundingDir==='paid'?fa:D(0n,0);
+    var fundingSigned=sub(received,paid);           // +收到 / -支付
+    var fees=add(openFee,closeFee);
+    var totalCost=sub(add(fees,paid),received);      // 手續費 + 支付 - 收到
+    var net=sub(gross,totalCost);                    // = 毛損益 - 手續費 + 收到 - 支付
+    return {notional:notional,gross:gross,openFee:openFee,closeFee:closeFee,funding:fundingSigned,totalCost:totalCost,net:net};
+  }
+  window.PnL={calcPnL:calcPnL,fmt:fmt,plain:plain,parseDec:parseDec};
+
+  // ---- 介面 ----
+  var $=function(id){return document.getElementById(id);};
+  var fields=['entry','exit','qty','openRate','closeRate','funding'];
+  function val(name){var el=document.querySelector('input[name='+name+']:checked');return el?el.value:'';}
+  function validate(){
+    var msgs=[],ok=true;
+    fields.forEach(function(id){$(id).classList.remove('bad');});
+    function need(id,label,positive){
+      var el=$(id),raw=el.value.trim();
+      if(raw===''||el.validity.badInput){if(id==='funding'){return;}el.classList.add('bad');msgs.push(label+' 請輸入數字');ok=false;return;}
+      var d=parseDec(raw);
+      if(!d){el.classList.add('bad');msgs.push(label+' 格式錯誤');ok=false;return;}
+      if(sgn(d)<0||(positive&&isZero(d))){el.classList.add('bad');msgs.push(label+(positive?' 必須大於 0':' 不可為負數'));ok=false;}
+    }
+    need('entry','開倉價',true);need('exit','平倉價',true);need('qty','幣數',true);
+    need('openRate','開倉手續費率',false);need('closeRate','平倉手續費率',false);need('funding','資金費',false);
+    ['openRate','closeRate'].forEach(function(id){var d=parseDec($(id).value);if(d&&plain(d,8)>=100){$(id).classList.add('bad');msgs.push('手續費率應以 % 輸入（例如 0.05），請確認');ok=false;}});
+    $('err').textContent=msgs.join('；');
+    return ok;
+  }
+  function setOut(id,d,colored){var el=$(id);el.textContent=fmt(d)+' '+val('quote');el.className=colored?(sgn(d)>0?'pos':sgn(d)<0?'neg':''):'';}
+  function clearOut(){['oNotional','oGross','oOpenFee','oCloseFee','oFunding','oCost','oNet','oNetBig'].forEach(function(i){$(i).textContent='—';$(i).className=i==='oNetBig'?'big':'';});}
+  function run(){
+    if(!validate()){clearOut();return;}
+    var r=calcPnL({side:val('side'),entry:$('entry').value,exit:$('exit').value,qty:$('qty').value,
+      openRatePct:$('openRate').value,closeRatePct:$('closeRate').value,fundingDir:val('fdir'),fundingAmt:$('funding').value||'0'});
+    setOut('oNotional',r.notional);setOut('oGross',r.gross,true);
+    setOut('oOpenFee',neg(r.openFee),false);$('oOpenFee').textContent=fmt(r.openFee)+' '+val('quote');
+    $('oCloseFee').textContent=fmt(r.closeFee)+' '+val('quote');
+    setOut('oFunding',r.funding,true);
+    setOut('oCost',r.totalCost);setOut('oNet',r.net,true);
+    $('oNetBig').textContent=fmt(r.net)+' '+val('quote');$('oNetBig').className='big '+(sgn(r.net)>0?'pos':sgn(r.net)<0?'neg':'');
+    return r;
+  }
+  $('calc').addEventListener('click',function(){if(run())$('out').scrollIntoView({block:'start'});});
+  $('f').addEventListener('input',function(){var any=['entry','exit','qty'].every(function(i){return $(i).value.trim()!=='';});if(any)run();else{$('err').textContent='';clearOut();}});
+  $('f').addEventListener('change',function(){if(['entry','exit','qty'].every(function(i){return $(i).value.trim()!=='';}))run();});
+  $('reset').addEventListener('click',function(){['entry','exit','qty'].forEach(function(i){$(i).value='';});$('openRate').value='0.05';$('closeRate').value='0.05';$('funding').value='0';$('fRecv').checked=true;$('err').textContent='';fields.forEach(function(i){$(i).classList.remove('bad');});clearOut();});
+})();
+</script>
+</body>
+</html>
