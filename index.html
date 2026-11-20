@@ -46,6 +46,25 @@
   .pos{color:var(--pos)} .neg{color:var(--neg)}
   footer{color:var(--mute);font-size:.78rem;text-align:center;margin-top:8px}
   details{font-size:.85rem;color:var(--mute)} summary{cursor:pointer}
+
+  .upgrade-jump{text-align:center;margin:2px 2px 14px;font-size:.85rem}
+  .upgrade-jump a{color:var(--pri);text-decoration:none;font-weight:600}
+  .upgrade h2{font-size:1.08rem;margin:0 0 8px;line-height:1.4}
+  .upgrade .lead{margin:0 0 12px;font-size:.9rem}
+  .compare{display:grid;gap:10px;margin:0 0 14px}
+  .compare .box{background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:10px 12px}
+  .compare h3{font-size:.9rem;margin:0 0 4px}
+  .compare ul{margin:4px 0 0;padding-left:1.15em}
+  .compare li{margin:3px 0;font-size:.85rem}
+  .plist{display:flex;flex-direction:column;gap:10px}
+  .product{border:1px solid var(--line);border-radius:10px;padding:12px}
+  .product.rec{border-color:var(--pri)}
+  .badge{display:inline-block;font-size:.72rem;font-weight:700;color:#fff;background:var(--pri);border-radius:999px;padding:2px 8px;margin-bottom:6px}
+  .product h3{font-size:.95rem;margin:0 0 2px;line-height:1.4}
+  .price{font-weight:800;font-size:1.15rem;margin:2px 0 6px}
+  .product p{margin:0;font-size:.85rem;color:var(--mute)}
+  a.buy{display:block;text-align:center;margin-top:10px;padding:11px 12px;border-radius:10px;background:var(--pri);color:#fff;font-weight:600;text-decoration:none}
+  .fine{font-size:.78rem;color:var(--mute);margin:12px 0 0}
 </style>
 </head>
 <body>
@@ -117,10 +136,63 @@
     </details>
   </section>
 
+
+  <p class="upgrade-jump"><a href="#upgrade">想要完整離線工具＋交易記帳表？</a></p>
+
   <footer>
     🔒 不收集交易資料：所有計算都在你的瀏覽器內完成，不連網、不使用追蹤分析、不儲存任何交易紀錄。<br>
     本工具僅供試算，非投資建議；實際金額以交易所結算為準（費率、折扣、資金費、強平等因素可能不同）。
   </footer>
+
+  <section id="upgrade" class="card upgrade">
+    <h2>想要完整離線工具＋交易記帳表？</h2>
+    <p class="lead">本頁是免費線上計算器，用來做<strong>單筆損益即時試算</strong>。若你希望把工具下載下來離線使用、把每筆交易記進自動累計的記帳表，或在下單前先依停損反推該下幾顆，可以使用下面的完整工具包。</p>
+
+    <div class="compare">
+      <div class="box">
+        <h3>免費線上版（本頁）</h3>
+        <ul>
+          <li>單筆損益即時試算（手續費、資金費、淨損益）</li>
+          <li>需開啟這個網頁使用</li>
+          <li>不含記帳表，也不含下單前的倉位反推</li>
+        </ul>
+      </div>
+      <div class="box">
+        <h3>付費工具包（一次買斷、下載後永久使用）</h3>
+        <ul>
+          <li>離線永久使用，可用手機瀏覽器打開，也可加到主畫面</li>
+          <li>可匯入 Google 試算表／Excel 的 200 筆自動累計記帳表（含範例與使用說明）</li>
+          <li>下單前倉位與停損風險反推工具：依最大可承受虧損、停損距離與雙邊手續費，反推安全下單幣數與最小所需槓桿</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="plist">
+      <article class="product">
+        <h3>合約損益計算器＋交易記帳包</h3>
+        <div class="price">US$9</div>
+        <p>離線單檔損益計算器＋可匯入 Google 試算表的 200 筆記帳包（含範例與使用說明）。適合平倉後把實際淨損益算清楚、並逐筆記下來。</p>
+        <a class="buy" href="https://3562609292882.gumroad.com/l/hzudjc" target="_blank" rel="noopener noreferrer">查看商品頁（US$9）</a>
+      </article>
+
+      <article class="product">
+        <h3>倉位與風險計算器</h3>
+        <div class="price">US$7</div>
+        <p>依停損距離與單筆最大可承受虧損，含雙邊手續費反推安全下單幣數與最小所需槓桿。適合送出訂單前先決定該下幾顆。</p>
+        <a class="buy" href="https://3562609292882.gumroad.com/l/qrpsux" target="_blank" rel="noopener noreferrer">查看商品頁（US$7）</a>
+      </article>
+
+      <article class="product rec">
+        <div class="badge">推薦・比單買省 US$4</div>
+        <h3>小資合約工具組合購包</h3>
+        <div class="price">US$12</div>
+        <p>一次收齊上面兩套完整工具包。分開單買是 US$16，合購是 US$12。</p>
+        <a class="buy" href="https://3562609292882.gumroad.com/l/xuvsrc" target="_blank" rel="noopener noreferrer">查看合購包（US$12）</a>
+      </article>
+    </div>
+
+    <p class="fine">以上是計算與記帳工具，一次買斷，下載後可離線使用；所有計算同樣在你自己的裝置完成，不會把交易資料回傳給我們。頁面金額以 Gumroad 結帳顯示為準（可能依地區顯示當地幣別）。本工具不提供交易訊號或操作建議，也不構成投資建議。合約交易風險高，可能損失全部保證金；實際損益、手續費、資金費與強平都以交易所結算為準。</p>
+  </section>
 </main>
 
 <script>
