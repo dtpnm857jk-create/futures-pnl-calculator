@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://dtpnm857jk-create.github.io/futures-pnl-calculator/sitemap.xml
