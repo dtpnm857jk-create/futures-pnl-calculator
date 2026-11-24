@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="zh-Hant-TW">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="逐倉強平價">
+<meta name="theme-color" content="#0f766e">
+<meta name="format-detection" content="telephone=no">
+<meta name="referrer" content="no-referrer">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; script-src 'unsafe-inline'; img-src data:; connect-src 'none'; form-action 'none'">
+<title>逐倉強平價試算｜USDT／USDC 線性永續合約</title>
+<meta name="description" content="免費的 USDT／USDC 線性永續合約逐倉強平價試算。輸入方向、開倉價、幣數、保證金或槓桿，估算強平價格、距離與維持保證金。結果為估算，實際強平價以交易所顯示為準，亦非投資建議。計算在瀏覽器內完成，不收集資料。">
+<meta name="robots" content="index,follow">
+<link rel="canonical" href="https://dtpnm857jk-create.github.io/futures-pnl-calculator/liquidation.html">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="zh_TW">
+<meta property="og:site_name" content="合約小資派">
+<meta property="og:title" content="逐倉強平價試算｜USDT／USDC 線性永續合約">
+<meta property="og:description" content="免費的 USDT／USDC 線性永續合約逐倉強平價試算。輸入方向、開倉價、幣數、保證金或槓桿，估算強平價格與距離。結果為估算，實際強平價以交易所顯示為準，亦非投資建議。">
+<meta property="og:url" content="https://dtpnm857jk-create.github.io/futures-pnl-calculator/liquidation.html">
+<meta property="og:image" content="https://dtpnm857jk-create.github.io/futures-pnl-calculator/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="逐倉強平價試算｜USDT／USDC 線性永續合約">
+<meta name="twitter:description" content="免費的 USDT／USDC 線性永續合約逐倉強平價試算。結果為估算，實際強平價以交易所顯示為準，亦非投資建議。">
+<meta name="twitter:image" content="https://dtpnm857jk-create.github.io/futures-pnl-calculator/og.png">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "逐倉強平價試算",
+  "alternateName": "逐倉（Isolated）強平價估算",
+  "url": "https://dtpnm857jk-create.github.io/futures-pnl-calculator/liquidation.html",
+  "description": "免費的 USDT／USDC 線性永續合約逐倉強平價試算。結果為估算，實際強平價以交易所顯示為準，亦非投資建議。計算在瀏覽器內完成，不收集資料。",
+  "inLanguage": "zh-Hant-TW",
+  "applicationCategory": "FinanceApplication",
+  "operatingSystem": "Any",
+  "isAccessibleForFree": true,
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "USD"
+  },
+  "author": {
+    "@type": "Organization",
+    "name": "合約小資派"
+  }
+}
+</script>
+<style>
+  :root{--bg:#f4f6f8;--card:#fff;--ink:#14202b;--mute:#5d6b78;--line:#dde3e8;--pri:#0f766e;--pos:#0a8a3a;--neg:#c62828;--r:14px}
+  @media (prefers-color-scheme:dark){:root{--bg:#0f1418;--card:#182027;--ink:#e8eef2;--mute:#9aa8b3;--line:#2a353e;--pri:#2dd4bf;--pos:#4ade80;--neg:#f87171}}
+  *{box-sizing:border-box}
+  html{-webkit-text-size-adjust:100%}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"PingFang TC","Noto Sans CJK TC","Microsoft JhengHei",sans-serif;line-height:1.5;padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left)}
+  main{max-width:520px;margin:0 auto;padding:14px 14px 28px}
+  h1{font-size:1.25rem;margin:6px 2px 2px}
+  h2{font-size:1.08rem;margin:0 0 8px;line-height:1.4}
+  .sub{color:var(--mute);font-size:.85rem;margin:0 2px 12px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:14px;margin-bottom:12px}
+  .row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  label{display:block;font-size:.85rem;color:var(--mute);margin:8px 0 4px}
+  input[type=number]{width:100%;font-size:17px;padding:11px 12px;border:1px solid var(--line);border-radius:10px;background:transparent;color:var(--ink);-webkit-appearance:none;appearance:none}
+  input:focus{outline:2px solid var(--pri);border-color:transparent}
+  input.bad{border-color:var(--neg);outline-color:var(--neg)}
+  .seg{display:flex;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+  .seg input{position:absolute;opacity:0;pointer-events:none}
+  .seg label{flex:1;text-align:center;margin:0;padding:10px 4px;font-size:1rem;color:var(--ink);cursor:pointer;user-select:none}
+  .seg input:checked+label{background:var(--pri);color:#fff;font-weight:600}
+  .seg input:focus-visible+label{outline:2px solid var(--pri);outline-offset:-3px}
+  .hint{font-size:.78rem;color:var(--mute);margin-top:4px}
+  .err{color:var(--neg);font-size:.85rem;min-height:1.2em;margin-top:8px}
+  .btns{display:flex;gap:10px;margin-top:10px}
+  button{flex:1;font-size:1rem;padding:12px;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--ink)}
+  button.pri{background:var(--pri);border-color:var(--pri);color:#fff;font-weight:600}
+  table{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums}
+  td{padding:7px 2px;border-bottom:1px solid var(--line);font-size:.95rem}
+  td:last-child{text-align:right;white-space:nowrap}
+  tr.sub td{color:var(--mute);font-size:.85rem;padding-left:14px}
+  tr.total td{font-weight:700;font-size:1.05rem;border-bottom:none}
+  .big{font-size:1.6rem;font-weight:800;text-align:center;margin:4px 0 8px}
+  .pos{color:var(--pos)} .neg{color:var(--neg)}
+  footer{color:var(--mute);font-size:.78rem;text-align:center;margin-top:8px}
+  details{font-size:.85rem;color:var(--mute)} summary{cursor:pointer}
+  .tool-link{text-align:center;margin:0 2px 12px;font-size:.85rem}
+  .tool-link a{color:var(--pri);text-decoration:none;font-weight:600}
+  .warn{background:var(--bg);border:1px solid var(--neg);border-radius:10px;padding:10px 12px;font-size:.85rem;margin:0 0 12px;color:var(--ink)}
+  .warn strong{color:var(--neg)}
+  .explain p{margin:0 0 10px;font-size:.9rem}
+  .explain p:last-child{margin-bottom:0}
+  .formula{background:var(--bg);border-radius:10px;padding:10px 12px;font-size:.85rem;margin:0 0 10px}
+  .example{background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:10px 12px;font-size:.85rem}
+  .badge{display:inline-block;font-size:.72rem;font-weight:700;color:#fff;background:var(--pri);border-radius:999px;padding:2px 8px;margin-bottom:6px}
+  .example h3{font-size:.9rem;margin:0 0 6px}
+  .hidden{display:none}
+</style>
+</head>
+<body>
+<main>
+  <h1>逐倉強平價試算</h1>
+  <p class="sub">USDT／USDC 本位線性永續合約・估算逐倉（Isolated）保證金模式下的強平價格</p>
+  <p class="tool-link"><a href="./">← 回到合約損益計算器</a></p>
+
+  <div class="warn" role="note">
+    <strong>這是估算，不是交易所的官方強平價。</strong>維持保證金率會依交易所、幣種與風險檔位而不同，資金費、手續費、標記價格與保險清算費也可能讓實際強平價不一樣。下單或風控請以交易所顯示的數字為準。本工具僅供試算，非投資建議。
+  </div>
+
+  <form id="f" class="card" novalidate autocomplete="off" onsubmit="return false">
+    <label>計價幣別</label>
+    <div class="seg" role="radiogroup" aria-label="計價幣別">
+      <input type="radio" name="quote" id="qUSDT" value="USDT" checked><label for="qUSDT">USDT</label>
+      <input type="radio" name="quote" id="qUSDC" value="USDC"><label for="qUSDC">USDC</label>
+    </div>
+
+    <label>方向</label>
+    <div class="seg" role="radiogroup" aria-label="方向">
+      <input type="radio" name="side" id="sLong" value="long" checked><label for="sLong">做多</label>
+      <input type="radio" name="side" id="sShort" value="short"><label for="sShort">做空</label>
+    </div>
+
+    <div class="row">
+      <div><label for="entry">開倉價</label><input type="number" id="entry" inputmode="decimal" step="any" min="0" placeholder="例：160"></div>
+      <div>
+        <label for="qty">幣數（數量，單位：幣）</label>
+        <input type="number" id="qty" inputmode="decimal" step="any" min="0" placeholder="例：25">
+      </div>
+    </div>
+    <div class="hint">請輸入「幣的數量」，不是張數。</div>
+
+    <label>保證金或槓桿</label>
+    <div class="seg" role="radiogroup" aria-label="保證金或槓桿">
+      <input type="radio" name="mmode" id="mMargin" value="margin" checked><label for="mMargin">保證金</label>
+      <input type="radio" name="mmode" id="mLev" value="leverage"><label for="mLev">槓桿倍數</label>
+    </div>
+    <div id="marginWrap">
+      <label for="margin">起始保證金</label>
+      <input type="number" id="margin" inputmode="decimal" step="any" min="0" placeholder="例：400">
+      <div class="hint">逐倉倉位實際劃入的保證金，不是名目價值。</div>
+    </div>
+    <div id="levWrap" class="hidden">
+      <label for="leverage">槓桿倍數</label>
+      <input type="number" id="leverage" inputmode="decimal" step="any" min="0" placeholder="例：10">
+      <div class="hint">起始保證金會依「開倉價 × 幣數 ÷ 槓桿」推算。</div>
+    </div>
+
+    <label for="mmr">維持保證金率 %</label>
+    <input type="number" id="mmr" inputmode="decimal" step="any" min="0" value="1">
+    <div class="hint">預設 1% 是假設值，不是所有交易所、所有檔位的真實費率。請改成你交易所該幣種、該風險檔位（tier）顯示的維持保證金率。1% 就輸入 1。</div>
+
+    <label for="fee">手續費（選填）</label>
+    <input type="number" id="fee" inputmode="decimal" step="any" min="0" placeholder="未填則忽略">
+    <div class="hint">若填寫，會先從保證金扣除後再估算。未填或 0 則忽略手續費。</div>
+
+    <div class="err" id="err" role="alert"></div>
+    <div class="btns">
+      <button type="button" id="reset">清除</button>
+      <button type="button" class="pri" id="calc">計算</button>
+    </div>
+  </form>
+
+  <section class="card" id="out" aria-live="polite">
+    <div class="sub" style="text-align:center;margin:0">估算強平價</div>
+    <div class="big" id="oLiqBig">—</div>
+    <table>
+      <tr><td>距開倉價</td><td id="oDist">—</td></tr>
+      <tr><td>開倉名目價值</td><td id="oNotional">—</td></tr>
+      <tr class="sub"><td>起始保證金</td><td id="oMargin">—</td></tr>
+      <tr class="sub"><td>扣除手續費後保證金</td><td id="oEffMargin">—</td></tr>
+      <tr class="total"><td>維持保證金（依估算強平價）</td><td id="oMM">—</td></tr>
+    </table>
+    <details style="margin-top:10px"><summary>計算公式</summary>
+      <p>做多強平價 ＝（開倉價 × 幣數 − 保證金）÷（幣數 ×（1 − 維持保證金率））<br>
+      做空強平價 ＝（開倉價 × 幣數 ＋ 保證金）÷（幣數 ×（1 ＋ 維持保證金率））<br>
+      維持保證金 ＝ 維持保證金率 × 強平價 × 幣數<br>
+      若有填手續費：保證金會先扣除手續費再代入上式。</p>
+      <p>計算以十進位精確運算，顯示四捨五入至小數第 8 位。這仍是估算，實際數字以交易所為準。</p>
+    </details>
+  </section>
+
+  <section class="card explain">
+    <h2>這頁在算什麼</h2>
+    <p>這是給 <strong>USDT／USDC 本位線性永續合約、逐倉（Isolated）保證金模式</strong>使用的強平價估算。全倉（Cross）會把其他倉位與帳戶餘額算進去，不適用本公式。</p>
+    <p>在逐倉模式下，當未實現虧損把剩餘保證金降到只夠「維持保證金」時，就會觸發強平。因為維持保證金 ＝ 維持保證金率 × <strong>強平價</strong> × 幣數，精確算法必須把強平價解出來，而不是只用開倉價去估。</p>
+    <div class="formula">
+      做多（精確）：強平價 ＝（開倉價 × 幣數 − 保證金）÷（幣數 ×（1 − 維持保證金率））<br>
+      做空（精確）：強平價 ＝（開倉價 × 幣數 ＋ 保證金）÷（幣數 ×（1 ＋ 維持保證金率））
+    </div>
+    <p>若有填入手續費，會先從保證金扣除再計算；未填則忽略手續費。</p>
+
+    <div class="example">
+      <div class="badge">假設數字</div>
+      <h3>SOL 做多範例（僅供說明公式）</h3>
+      <p>假設：SOL 做多、開倉價 160、幣數 25、保證金 400、維持保證金率 1%。以下數字不是行情預測，也不是操作建議。</p>
+      <p><strong>精確解：</strong>（160 × 25 − 400）÷（25 × 0.99）＝ 3,600 ÷ 24.75 ≈ <strong>145.45</strong>（精確值為循環小數 145.4545…）。</p>
+      <p><strong>簡單近似：</strong>先用開倉價估維持保證金 ≈ 1% × 160 × 25 ＝ 40，再算 160 −（400 − 40）÷ 25 ＝ <strong>145.6</strong>。這個近似值很接近精確解，但本工具採用精確解（約 145.45）。</p>
+      <p>實際強平價仍以交易所顯示為準。</p>
+    </div>
+  </section>
+
+  <p class="tool-link"><a href="./">← 回到合約損益計算器</a></p>
+
+  <footer>
+    合約小資派・免費試算工具<br>
+    🔒 不收集交易資料：所有計算都在你的瀏覽器內完成，不連網、不使用追蹤分析、不儲存任何交易紀錄。<br>
+    本工具僅供試算，非投資建議；實際強平價與金額以交易所結算為準（費率、檔位、標記價格、資金費、手續費與保險清算等因素可能不同）。
+  </footer>
+</main>
+
+<script>
+(function(){
+  'use strict';
+  function D(v,s){return {v:v,s:s};}
+  function parseDec(str){
+    str=String(str).trim();
+    if(!/^[+-]?(\d+\.?\d*|\.\d+)([eE][+-]?\d+)?$/.test(str)) return null;
+    var m=str.match(/^([+-]?)(\d*)\.?(\d*)(?:[eE]([+-]?\d+))?$/);
+    var sign=m[1]==='-'?-1n:1n, ip=m[2]||'0', fp=m[3]||'', ex=parseInt(m[4]||'0',10);
+    var digits=BigInt(ip+fp), scale=fp.length-ex;
+    if(scale<0){digits*=10n**BigInt(-scale);scale=0;}
+    return D(sign*digits,scale);
+  }
+  function align(a,b){var s=Math.max(a.s,b.s);return [a.v*10n**BigInt(s-a.s),b.v*10n**BigInt(s-b.s),s];}
+  function add(a,b){var t=align(a,b);return D(t[0]+t[1],t[2]);}
+  function sub(a,b){var t=align(a,b);return D(t[0]-t[1],t[2]);}
+  function mul(a,b){return D(a.v*b.v,a.s+b.s);}
+  function pct(a){return D(a.v,a.s+2);}
+  function neg(a){return D(-a.v,a.s);}
+  function isZero(a){return a.v===0n;}
+  function sgn(a){return a.v>0n?1:(a.v<0n?-1:0);}
+  function div(a,b,extra){
+    if(!b||b.v===0n) return null;
+    extra=extra==null?18:extra;
+    var num=a.v*(10n**BigInt(extra+b.s));
+    var den=b.v;
+    var q=num/den, r=num%den;
+    if(r<0n)r=-r;
+    var aden=den<0n?-den:den;
+    if(r*2n>=aden)q+=(num<0n)!==(den<0n)?-1n:1n;
+    return D(q,a.s+extra);
+  }
+  function fmt(a,dp){
+    dp=dp==null?8:dp;
+    var v=a.v,s=a.s;
+    if(s>dp){var f=10n**BigInt(s-dp),q=v/f,r=v%f;if(r<0n)r=-r;if(r*2n>=f)q+=(v<0n?-1n:1n);v=q;s=dp;}
+    var neg_=v<0n; if(neg_)v=-v;
+    var str=v.toString().padStart(s+1,'0');
+    var ip=str.slice(0,str.length-s), fp=str.slice(str.length-s);
+    fp=fp.replace(/0+$/,''); while(fp.length<2)fp+='0';
+    ip=ip.replace(/\B(?=(\d{3})+(?!\d))/g,',');
+    if(neg_ && /[1-9]/.test(ip+fp)) return '-'+ip+'.'+fp;
+    return ip+'.'+fp;
+  }
+  function plain(a,dp){return Number(fmt(a,dp).replace(/,/g,''));}
+
+  // inp: {side:'long'|'short', entry, qty, marginMode:'margin'|'leverage', margin, leverage, mmrPct, fee}
+  function calcLiq(inp){
+    var e=parseDec(inp.entry), q=parseDec(inp.qty);
+    var mmrPct=parseDec(inp.mmrPct==null||String(inp.mmrPct).trim()===''?'1':inp.mmrPct);
+    var feeRaw=inp.fee==null||String(inp.fee).trim()===''?'0':inp.fee;
+    var fee=parseDec(feeRaw);
+    if(!e||!q) return {ok:false,error:'開倉價與幣數必須是有效數字'};
+    if(sgn(e)<=0||sgn(q)<=0) return {ok:false,error:'開倉價與幣數必須大於 0'};
+    if(!mmrPct) return {ok:false,error:'維持保證金率格式錯誤'};
+    if(sgn(mmrPct)<0) return {ok:false,error:'維持保證金率不可為負數'};
+    if(plain(mmrPct,8)>=100) return {ok:false,error:'維持保證金率必須小於 100%'};
+    if(!fee) return {ok:false,error:'手續費格式錯誤'};
+    if(sgn(fee)<0) return {ok:false,error:'手續費不可為負數'};
+
+    var notional=mul(e,q);
+    var margin, mode=inp.marginMode||'margin';
+    if(mode==='leverage'){
+      var lev=parseDec(inp.leverage);
+      if(!lev) return {ok:false,error:'槓桿倍數必須是有效數字'};
+      if(sgn(lev)<=0) return {ok:false,error:'槓桿倍數必須大於 0'};
+      margin=div(notional,lev);
+    }else{
+      margin=parseDec(inp.margin);
+      if(!margin) return {ok:false,error:'保證金必須是有效數字'};
+      if(sgn(margin)<=0) return {ok:false,error:'保證金必須大於 0'};
+    }
+    var eff=sub(margin,fee);
+    if(sgn(eff)<=0) return {ok:false,error:'扣除手續費後的保證金必須大於 0'};
+
+    var mmr=pct(mmrPct);
+    var one=D(1n,0);
+    var factor=inp.side==='short'?add(one,mmr):sub(one,mmr);
+    if(sgn(factor)<=0) return {ok:false,error:'維持保證金率必須小於 100%'};
+    var numer=inp.side==='short'?add(notional,eff):sub(notional,eff);
+    var denom=mul(q,factor);
+    var liq=div(numer,denom);
+    if(!liq||sgn(liq)<=0) return {ok:false,error:'以目前參數計算出的強平價不是正數，請檢查保證金、槓桿與維持保證金率'};
+
+    var mm=mul(mul(mmr,liq),q);
+    var dist=mul(div(sub(liq,e),e),D(100n,0));
+    var distAbs=sgn(dist)<0?neg(dist):dist;
+    return {ok:true,side:inp.side,liq:liq,distancePct:dist,distanceAbsPct:distAbs,notional:notional,margin:margin,effectiveMargin:eff,mm:mm,fee:fee};
+  }
+
+  var api={calcLiq:calcLiq,fmt:fmt,plain:plain,parseDec:parseDec};
+  if(typeof window!=='undefined') window.Liq=api;
+  if(typeof module!=='undefined'&&module.exports) module.exports=api;
+
+  if(typeof document==='undefined') return;
+
+  var $=function(id){return document.getElementById(id);};
+  var fields=['entry','qty','margin','leverage','mmr','fee'];
+  function val(name){var el=document.querySelector('input[name='+name+']:checked');return el?el.value:'';}
+  function quote(){return val('quote');}
+  function mode(){return val('mmode');}
+  function syncMode(){
+    var lev=mode()==='leverage';
+    $('marginWrap').classList.toggle('hidden',lev);
+    $('levWrap').classList.toggle('hidden',!lev);
+  }
+  function validate(){
+    var msgs=[],ok=true;
+    fields.forEach(function(id){$(id).classList.remove('bad');});
+    function need(id,label,positive,optional){
+      var el=$(id),raw=el.value.trim();
+      if(raw===''||el.validity.badInput){
+        if(optional&&raw===''&&!el.validity.badInput) return null;
+        el.classList.add('bad');msgs.push(label+' 請輸入數字');ok=false;return null;
+      }
+      var d=parseDec(raw);
+      if(!d){el.classList.add('bad');msgs.push(label+' 格式錯誤');ok=false;return null;}
+      if(sgn(d)<0||(positive&&isZero(d))){el.classList.add('bad');msgs.push(label+(positive?' 必須大於 0':' 不可為負數'));ok=false;return null;}
+      return d;
+    }
+    need('entry','開倉價',true,false);
+    need('qty','幣數',true,false);
+    if(mode()==='leverage') need('leverage','槓桿倍數',true,false);
+    else need('margin','保證金',true,false);
+    var mmr=need('mmr','維持保證金率',false,false);
+    if(mmr&&plain(mmr,8)>=100){$('mmr').classList.add('bad');msgs.push('維持保證金率必須小於 100%');ok=false;}
+    need('fee','手續費',false,true);
+    $('err').textContent=msgs.join('；');
+    return ok;
+  }
+  function setAmt(id,d){$(id).textContent=fmt(d)+' '+quote();}
+  function clearOut(){
+    $('oLiqBig').textContent='—';$('oLiqBig').className='big';
+    ['oDist','oNotional','oMargin','oEffMargin','oMM'].forEach(function(i){$(i).textContent='—';$(i).className='';});
+  }
+  function run(){
+    if(!validate()){clearOut();return;}
+    var r=calcLiq({
+      side:val('side'),entry:$('entry').value,qty:$('qty').value,
+      marginMode:mode(),margin:$('margin').value,leverage:$('leverage').value,
+      mmrPct:$('mmr').value,fee:$('fee').value
+    });
+    if(!r.ok){$('err').textContent=r.error;clearOut();return r;}
+    $('oLiqBig').textContent=fmt(r.liq)+' '+quote();
+    $('oLiqBig').className='big';
+    var dirText=r.side==='short'?'上漲':'下跌';
+    $('oDist').textContent=dirText+' '+fmt(r.distanceAbsPct)+' %';
+    setAmt('oNotional',r.notional);
+    setAmt('oMargin',r.margin);
+    setAmt('oEffMargin',r.effectiveMargin);
+    setAmt('oMM',r.mm);
+    return r;
+  }
+  function ready(){
+    return $('entry').value.trim()!=='' && $('qty').value.trim()!=='' &&
+      (mode()==='leverage'?$('leverage').value.trim()!=='':$('margin').value.trim()!=='');
+  }
+  $('calc').addEventListener('click',function(){var r=run();if(r&&r.ok)$('out').scrollIntoView({block:'start'});});
+  $('f').addEventListener('input',function(){if(ready())run();else{$('err').textContent='';clearOut();}});
+  $('f').addEventListener('change',function(){syncMode();if(ready())run();});
+  $('reset').addEventListener('click',function(){
+    ['entry','qty','margin','leverage','fee'].forEach(function(i){$(i).value='';});
+    $('mmr').value='1';$('sLong').checked=true;$('mMargin').checked=true;$('qUSDT').checked=true;
+    $('err').textContent='';fields.forEach(function(i){$(i).classList.remove('bad');});
+    syncMode();clearOut();
+  });
+  syncMode();
+})();
+</script>
+</body>
+</html>
